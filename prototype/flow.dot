@@ -1,0 +1,42 @@
+digraph G {
+  rankdir=TB; nodesep=0.35; ranksep=0.4;
+  node [fontname="Helvetica", fontsize=11, style="filled", shape=box, margin="0.15,0.08"];
+  edge [fontname="Helvetica", fontsize=9];
+
+  subgraph cluster_legend {
+    label="Legend"; fontname="Helvetica"; fontsize=10; style=dashed; color="#888888";
+    l1 [label="Rules / code", fillcolor="#cfe3ff"];
+    l2 [label="AI step", fillcolor="#ffe0a3", shape=box, style="filled,bold"];
+    l3 [label="Human checkpoint", fillcolor="#c8efc8", shape=octagon];
+    l1 -> l2 -> l3 [style=invis];
+  }
+
+  up   [label="1. Reviewer uploads proposals\nand selects category", fillcolor="#cfe3ff"];
+  crit [label="2. Load criteria + weights for category\n(admin database, versioned)", fillcolor="#cfe3ff"];
+  txt  [label="3. Extract text from PDF\n(OCR if scanned, else manual-entry flag)", fillcolor="#cfe3ff"];
+  scan [label="4. Injection scan\n(keyword + pattern rules)", fillcolor="#cfe3ff"];
+  ai   [label="5. AI extraction, temp 0, strict JSON\nfacts + evidence quote, null if unstated\nflags injection attempts", fillcolor="#ffe0a3", style="filled,bold"];
+  val  [label="6. Validate: schema ok, quotes found\nin source, values in range", fillcolor="#cfe3ff"];
+  mand [label="7. Mandatory checks (pass/fail)\nlicence held by bidder, WSIB + $5M,\nbudget, 16-week limit", fillcolor="#cfe3ff"];
+  inel [label="Ineligible", fillcolor="#f4c7c3"];
+  flag [label="Flagged: injection or failed validation", fillcolor="#f4c7c3"];
+  h1   [label="H1. Human reviews flagged and\nineligible bids; can correct or reinstate", fillcolor="#c8efc8", shape=octagon];
+  score[label="8. Weighted scoring by fixed formulas\n(experience, price, timeline, warranty, team)", fillcolor="#cfe3ff"];
+  rank [label="9. Sort and build reasons from scores\n+ evidence quotes", fillcolor="#cfe3ff"];
+  h2   [label="H2. Human checks values against PDF,\nreviews ranked list, can override with reason", fillcolor="#c8efc8", shape=octagon];
+  award[label="H3. Human makes the final award decision", fillcolor="#c8efc8", shape=octagon];
+  log  [label="Audit log (every step): criteria version, prompt version,\nmodel, raw extraction, scores, edits, overrides, decision", fillcolor="#cfe3ff"];
+
+  up -> crit -> txt -> scan -> ai -> val;
+  val -> flag [label="fails"];
+  val -> mand [label="ok"];
+  scan -> flag [label="suspicious", style=dashed];
+  mand -> inel [label="any fail"];
+  mand -> score [label="pass"];
+  flag -> h1; inel -> h1;
+  h1 -> score [label="reinstated /\ncorrected"];
+  score -> rank -> h2 -> award;
+  award -> log;
+  rank -> log [style=dotted];
+  h1 -> log [style=dotted];
+}

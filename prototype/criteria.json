@@ -1,0 +1,14 @@
+{
+  "category": "Commercial Solar Installation",
+  "version": "v1",
+  "budget_ceiling_cad": 260000,
+  "max_weeks": 16,
+  "mandatory": ["ontario_licence", "wsib_and_insurance"],
+  "weights": {
+    "experience": 30,
+    "price": 25,
+    "timeline": 15,
+    "warranty": 15,
+    "team": 15
+  }
+}
